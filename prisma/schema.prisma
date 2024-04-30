@@ -7,32 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int  @id  @default(autoincrement())
-  email String @unique
-  name  String @map("firstName")
-  role  Role? @default(USER)
-  // profile Profile?
+// model User {
+//   id    Int  @id  @default(autoincrement())
+//   email String @unique
+//   name  String @map("firstName")
+//   role  Role? @default(USER)
+//   // profile Profile?
 
-  profileId Int? @unique
-  profile Profile? @relation( fields: [profileId], references: [id])
+//   profileId Int? @unique
+//   profile Profile? @relation( fields: [profileId], references: [id])
 
-  @@map("users")
-  // @@id([email , name])
+//   @@map("users")
+//   // @@id([email , name])
 
-  @@unique([name, role])
-  @@index([id, email])
+//   @@unique([name, role])
+//   @@index([id, email])
+// }
+
+// model Profile {
+//   id Int @id @default(autoincrement())
+//   bio String 
+//   // userId Int @unique
+//   // user User @relation(fields: [userId] , references: [id])
+//   user User?
+
+// }
+
+
+// multi field relations between models 
+model User{
+  firstName String
+  lastName String 
+  profile Profile?
+  @@id([firstName, lastName])
 }
 
 model Profile {
-  id Int @id @default(autoincrement())
-  bio String 
-  // userId Int @unique
-  // user User @relation(fields: [userId] , references: [id])
-  user User?
+  id Int @id
+  userFirstName String 
+  userLastName String 
+  user User @relation(fields: [userFirstName, userLastName], references: [firstName, lastName])
 
+  @@unique([userFirstName, userLastName])
 }
-
 enum Role {
   USER
   ADMIN
