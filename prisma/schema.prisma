@@ -8,10 +8,27 @@ datasource db {
 }
 
 model User {
-  id    Int    @id
+  id    Int  @id  @default(autoincrement())
   email String @unique
-  name  String
-  role  String
+  name  String @map("firstName")
+  role  Role? @default(USER)
+  profile Profile?
 
   @@map("users")
+  // @@id([email , name])
+
+  @@unique([name, role])
+  @@index([id, email])
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+  bio String 
+  userId Int @unique
+  user User @relation(fields: [userId] , references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
